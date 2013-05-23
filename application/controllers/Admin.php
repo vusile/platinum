@@ -1317,27 +1317,31 @@ class Admin extends CI_Controller{
                 $data['error']=  validation_errors();
 
             }  else {
-                $from =$_POST['city'];
-                $to   =$_POST['area'];
+                
+                $from = $_POST['from'];
+                $to   = $_POST['to'];
+                $id   = $_POST['area'];
+                
                 $searchDates = $this->createDateRangeArray($from, $to);
 		echo "<pre>";
 		print_r($searchDates);
 		echo "<pre>";
-		$this->db->where_in('date',$searchDates);
-		$bookedDates=$this->db->get('booking');   
+                print $from."<br />";
+                print $to;
                 
-                foreach($bookedDates->result() as $bookedDate)
+                $this->db->select('locations.location_name, locations.description');
+                $this->db->from('locations');
+                $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
+                $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
+                $this->db->where('areas.area_id', $id);
+		$this->db->where_in('date',$searchDates);
+		$booking = $this->db->get();   
+                
+                foreach($booking->result() as $bookedDate)
 		{
 			if($key=array_search($bookedDate->date, $searchDates))
 				unset($searchDates[$key]);
-			
-				
-			
 		}
-
-		echo "<pre>";
-		print_r($searchDates);
-		echo "<pre>";
             }
         }
         $this->load->view('Admin/location_search', $data);
