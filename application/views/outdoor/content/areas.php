@@ -23,6 +23,6 @@
                 
                 $city_data = array_combine($keys, $values);
 
-                print form_dropdown('jumpMenu',$city_data, set_value('jumpMenu','jumpMenu','choose an area'), $js);
+                print form_dropdown('area',$city_data, set_value('area','jumpMenu','choose an area'), $js);
 ?>
 <br />

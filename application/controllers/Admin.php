@@ -1208,9 +1208,9 @@ class Admin extends CI_Controller{
         
         $this->grocery_crud->required_fields('location_id', 'start_date', 'end_date', 'client_id', 'renewal_term');
         
-        //$this->grocery_crud->callback_after_insert(array($this,'connect_location_image'));
+        $this->grocery_crud->callback_after_insert(array($this,'add_inventory_booking'));
         
-        //$this->grocery_crud->callback_after_update(array($this,'connect_location_image'));
+        $this->grocery_crud->callback_after_update(array($this,'add_inventory_booking'));
         
         //$this->grocery_crud->callback_after_delete(array($this,'delete_landlord_contact'));
         
@@ -1222,7 +1222,58 @@ class Admin extends CI_Controller{
         
         $this->_news_output($output); 
     }
-    
+    function createDateRangeArray($strDateFrom,$strDateTo) {
+        // takes two dates formatted as YYYY-MM-DD and creates an
+        // inclusive array of the dates between the from and to dates.
+
+        // could test validity of dates here but I'm already doing
+        // that in the main script
+
+	  $aryRange=array();
+
+	  $iDateFrom=mktime(1,0,0,substr($strDateFrom,5,2),     substr($strDateFrom,8,2),substr($strDateFrom,0,4));
+	  $iDateTo=mktime(1,0,0,substr($strDateTo,5,2),     substr($strDateTo,8,2),substr($strDateTo,0,4));
+
+	  if ($iDateTo>=$iDateFrom) {
+	    array_push($aryRange,date('Y-m-d',$iDateFrom)); // first entry
+
+	    while ($iDateFrom<$iDateTo) {
+	      $iDateFrom+=86400; // add 24 hours
+	      array_push($aryRange,date('Y-m-d',$iDateFrom));
+	    }
+	  }
+	  return $aryRange;
+	}
+
+    function add_inventory_booking($post_array, $primary_key){
+        
+        $strDateFrom = $post_array['start_date'];
+        $strDateTo   = $post_array['end_date'];
+        
+        $fromdates =  explode('/', $strDateFrom);
+        $from = $fromdates[2]."-". $fromdates[1]."-".$fromdates[0];
+        
+        $todate =  explode('/', $strDateTo);
+        $to =$todate[2]."-". $todate[1]."-".$todate[0];
+        print $from;
+        $searchDates = $this->createDateRangeArray($from, $to);
+        //if(count($aryRange)>0){
+        var_dump($searchDates);
+            //for($i=0; $i<=count($searchDates); $i++){
+            foreach ($searchDates as $key=>$value){
+               
+                $data = array(
+                    'location_id'=> $post_array['location_id'],
+                    'invetory_id'=>$primary_key,
+                    'date'=>$value
+                );
+                
+                $this->db->insert('booking', $data); 
+            }
+           // }
+        //}
+    }
+            
     function searach_location_availability(){
         
         $this->load->model('admin_model');
@@ -1266,7 +1317,27 @@ class Admin extends CI_Controller{
                 $data['error']=  validation_errors();
 
             }  else {
+                $from =$_POST['city'];
+                $to   =$_POST['area'];
+                $searchDates = $this->createDateRangeArray($from, $to);
+		echo "<pre>";
+		print_r($searchDates);
+		echo "<pre>";
+		$this->db->where_in('date',$searchDates);
+		$bookedDates=$this->db->get('booking');   
                 
+                foreach($bookedDates->result() as $bookedDate)
+		{
+			if($key=array_search($bookedDate->date, $searchDates))
+				unset($searchDates[$key]);
+			
+				
+			
+		}
+
+		echo "<pre>";
+		print_r($searchDates);
+		echo "<pre>";
             }
         }
         $this->load->view('Admin/location_search', $data);
