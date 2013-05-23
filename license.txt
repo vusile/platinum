@@ -1,0 +1,54 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    #Removes access to the system folder by users.
+    #Additionally this will allow you to create a System.php controller,
+    #previously this would not have been possible.
+    #'system' can be replaced if you have renamed your system folder.
+    RewriteCond %{REQUEST_URI} ^system.*
+    RewriteRule ^(.*)$ /index.php?/$1 [L]
+    
+    #When your application folder isn't in the system folder
+    #This snippet prevents user access to the application folder
+    #Submitted by: Fabdrol
+    #Rename 'application' to your applications folder name.
+    RewriteCond %{REQUEST_URI} ^application.*
+    RewriteRule ^(.*)$ /index.php?/$1 [L]
+
+    #Checks to see if the user is attempting to access a valid file,
+    #such as an image or css document, if this isn't true it sends the
+    #request to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ platinum/index.php?/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    # If we don't have mod_rewrite installed, all 404's
+    # can be sent to index.php, and everything works as normal.
+    # Submitted by: ElliotHaughin
+
+    ErrorDocument 404 /index.php
+</IfModule>
+
+    function create_url_callback($post_array) {
+        
+
+        $type = $post_array['type'];
+        
+        if($type ==1){
+            $post_array['url'] = "Pos-".url_title($post_array['title'])."";
+            $post_array['images'] = anchor('Admin/View_Images/'.$post_array['url'], 'Images');
+            $post_array['type'] = "pos";
+        }
+        else{
+            $post_array['url'] = "Op-".url_title($post_array['title'])."";
+            $post_array['images'] = anchor('Admin/View_Images/'.$post_array['url'], 'Images'). "  |  ".anchor('Admin/View_Images/'.$post_array['url'], 'Add');;
+            $post_array['type'] = "op";
+        }
+        
+        
+        return $post_array;
+    }        
+     
