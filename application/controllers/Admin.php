@@ -1329,7 +1329,7 @@ class Admin extends CI_Controller{
                 print $from."<br />";
                 print $to;
                 
-                $this->db->select('locations.location_name, locations.description');
+                $this->db->select('locations.location_name, locations.description, booking.date');
                 $this->db->from('locations');
                 $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
                 $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
@@ -1342,6 +1342,10 @@ class Admin extends CI_Controller{
 			if($key=array_search($bookedDate->date, $searchDates))
 				unset($searchDates[$key]);
 		}
+                
+                echo "<br /><pre>";
+		print_r($searchDates);
+		echo "<pre>";
             }
         }
         $this->load->view('Admin/location_search', $data);
