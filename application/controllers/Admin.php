@@ -1324,12 +1324,23 @@ class Admin extends CI_Controller{
                 
                 $searchDates = $this->createDateRangeArray($from, $to);
 		echo "<pre>";
-		print_r($searchDates);
+		//print_r($searchDates);
 		echo "<pre>";
                 print $from."<br />";
                 print $to;
                 
-                $this->db->select('locations.location_name, locations.description, booking.date');
+                $locationsAvailable=array();
+                
+                $this->db->where('area_id',$id);
+                $locations=$this->db->get('locations');
+                
+                foreach($locations->result() as $location)
+                {
+                    $locationsAvailable[$location->location_id]=$searchDates;
+                }
+                
+                
+                $this->db->select('locations.location_name, locations.description, booking.date,locations.location_id');
                 $this->db->from('locations');
                 $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
                 $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
@@ -1339,12 +1350,15 @@ class Admin extends CI_Controller{
                 
                 foreach($booking->result() as $bookedDate)
 		{
-			if($key=array_search($bookedDate->date, $searchDates))
-				unset($searchDates[$key]);
+                    if(array_search($bookedDate->date, $searchDates)!==FALSE)
+                    {
+                        $key=array_search($bookedDate->date, $searchDates);
+                        unset($locationsAvailable[$bookedDate->location_id][$key]);
+                    }
 		}
                 
                 echo "<br /><pre>";
-		print_r($searchDates);
+		print_r($locationsAvailable);
 		echo "<pre>";
             }
         }
