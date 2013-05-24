@@ -1323,11 +1323,11 @@ class Admin extends CI_Controller{
                 $id   = $_POST['area'];
                 
                 $searchDates = $this->createDateRangeArray($from, $to);
-		echo "<pre>";
+		//echo "<pre>";
 		//print_r($searchDates);
-		echo "<pre>";
-                print $from."<br />";
-                print $to;
+		//echo "<pre>";
+               // print $from."<br />";
+               // print $to;
                 
                 $locationsAvailable=array();
                 
@@ -1336,7 +1336,7 @@ class Admin extends CI_Controller{
                 
                 foreach($locations->result() as $location)
                 {
-                    $locationsAvailable[$location->location_id]=$searchDates;
+                    $locationsAvailable[$location->location_name]=$searchDates;
                 }
                 
                 
@@ -1353,13 +1353,15 @@ class Admin extends CI_Controller{
                     if(array_search($bookedDate->date, $searchDates)!==FALSE)
                     {
                         $key=array_search($bookedDate->date, $searchDates);
-                        unset($locationsAvailable[$bookedDate->location_id][$key]);
+                        unset($locationsAvailable[$bookedDate->location_name][$key]);
+                        $data['success'] =  $locationsAvailable;
                     }
 		}
                 
-                echo "<br /><pre>";
-		print_r($locationsAvailable);
-		echo "<pre>";
+                //var_dump($locationsAvailable);
+                //echo "<br /><pre>";
+		//print_r($locationsAvailable);
+		//echo "<pre>";
             }
         }
         $this->load->view('Admin/location_search', $data);

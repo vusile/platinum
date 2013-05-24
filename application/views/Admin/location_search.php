@@ -88,6 +88,24 @@
     {
          color:red; margin: 0px 0px 5px 0px; font-size: 12px; 
     }
+    td
+    {
+        width: 100px;
+        text-align: center;
+        padding: 5px;
+    }
+    #result
+    {
+        border-collapse: collapse;
+        border: 1px solid #F7AE36;
+        padding: 5px;
+    }
+    #result tr
+    {
+          border-collapse: collapse;
+          bord/er: 1px solid #F7AE36;
+          margin: 0 auto;
+    }
 </style>
 <link rel="stylesheet" href="style/js/libs/jquery-ui/css/ui-lightness/jquery-ui.css" />
 <script src="style/js/libs/jquery-1.9.1.min.js""></script>
@@ -144,86 +162,126 @@
             </ul>
         </div>
         <div id="content">
-            <section class="padded" style="margin: 20px 10px 10px 80px;">
-    <h2>Location Availability Search</h2>
-    <?php if(isset($error) && $error !=""){ ?>
-   <?php print  '<div id ="error">'.$error.'</div>'; ?>
-    <?php } ?>
-    <?php $form_data = array(
-            "name"     => "form",
-            "id"        => "forms"
+            <section class="padded" style="margin: 20px 80px 10px 80px;">
+                <?php if(!isset($success)){?>
+                <h2>Location Availability Search</h2>
+                <?php if(isset($error) && $error !=""){ ?>
+                <?php print  '<div id ="error">'.$error.'</div>'; ?>
+                <?php } ?>
+                <?php $form_data = array(
+                        "name"     => "form",
+                        "id"        => "forms"
 
-          );
-    ?>
-    <?php print form_open('Admin/searach_location_availability', $form_data); ?>
-    <table>
-        <tbody>
-            <tr>
-                <td class="twidth"><p><h4>City</h4></p></td>
-                <td>
-                    <p>
+                      );
+                ?>
+                <?php print form_open('Admin/searach_location_availability', $form_data); ?>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="twidth"><p><h4>City</h4></p></td>
+                            <td>
+                                <p>
+                                    <?php 
+                                        $js = 'id="jumpMenu" onChange="getArea()" class="selectOption city" ';
+
+                                        $values = array();
+                                        $keys = array();
+                                        array_push($values, 'choose a city');
+                                        array_push($keys, 'choose a city');
+
+                                        foreach ($Cities as $city){
+                                            $dat = $city['name'];
+                                            array_push($values, $dat);
+                                            $key = $city['city_id'];
+                                            array_push($keys, $key);                        
+                                        }
+
+                                        $city_data = array_combine($keys, $values);
+
+                                        print form_dropdown('city',$city_data, set_value('city','selectSection','choose a city'), $js);
+                                    ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><p><h4>Area</h4></p></td>
+                            <td>
+                                <p id="changeArea">
+                                <?php 
+                                    $js = 'id="jumpMenu" onChange="MM_jumpMenu(\'parent\',this,0)" class="selectOption" ';
+
+                                    $values = array();
+                                    $keys = array();
+                                    array_push($values, 'choose an area');
+                                    array_push($keys, 'choose an area');
+
+                                    foreach ($Areas as $area){
+                                        $dat = $area['name'];
+                                        array_push($values, $dat);
+                                        $key = $area['area_id'];
+                                        array_push($keys, $key);                        
+                                    }
+
+                                    $city_data = array_combine($keys, $values);
+
+                                    print form_dropdown('area',$city_data, set_value('area','jumpMenu','choose an area'), $js);
+                                ?>
+                                <br />
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><p><h4>Dates</h4></p></td>
+                            <td><input type="text" name="from" id="dateFrom" class='txt'></td>
+                            <td style='width:60px;'>To</td>
+                            <td><input type="text" name="to" id="toFrom" class='txt'></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <button class="round">Search</button>
+                <?php print form_close(); ?>
+                <?php }  else { ?>
+                
+                <h2>Location Availability Search Results</h2>
+                
+                <?php  //echo "<br /><pre>"; print_r($success);echo "<pre>";?>
+                
+                <p> <?php foreach ($success as $key=>$value): ?> </p>
+                
+                <p><h3 style="color:#F7AE36"> <?php print $key; ?> </h3></p>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates</h4>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <?php $i=0; ?>
+                        <?php foreach ($value as $row=>$rowdata): ?>
                         <?php 
-                            $js = 'id="jumpMenu" onChange="getArea()" class="selectOption city" ';
-
-                            $values = array();
-                            $keys = array();
-                            array_push($values, 'choose a city');
-                            array_push($keys, 'choose a city');
-
-                            foreach ($Cities as $city){
-                                $dat = $city['name'];
-                                array_push($values, $dat);
-                                $key = $city['city_id'];
-                                array_push($keys, $key);                        
+                            $i++;
+                            
+                            if($i%7 !=0){
+                               print '<td>'.$rowdata.'</td>';
                             }
-
-                            $city_data = array_combine($keys, $values);
-
-                            print form_dropdown('city',$city_data, set_value('city','selectSection','choose a city'), $js);
+                            else{
+                                print '</tr><tr><td> <?php print $rowdata; ?>  </td> </tr>';
+                            }
+                        
                         ?>
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><p><h4>Area</h4></p></td>
-                <td>
-                    <p id="changeArea">
-                    <?php 
-                        $js = 'id="jumpMenu" onChange="MM_jumpMenu(\'parent\',this,0)" class="selectOption" ';
-
-                        $values = array();
-                        $keys = array();
-                        array_push($values, 'choose an area');
-                        array_push($keys, 'choose an area');
-
-                        foreach ($Areas as $area){
-                            $dat = $area['name'];
-                            array_push($values, $dat);
-                            $key = $area['area_id'];
-                            array_push($keys, $key);                        
-                        }
-
-                        $city_data = array_combine($keys, $values);
-
-                        print form_dropdown('area',$city_data, set_value('area','jumpMenu','choose an area'), $js);
-                    ?>
-                    <br />
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><p><h4>Dates</h4></p></td>
-                <td><input type="text" name="from" id="dateFrom" class='txt'></td>
-                <td style='width:60px;'>To</td>
-                <td><input type="text" name="to" id="toFrom" class='txt'></td>
-            </tr>
-        
-        </tbody>
-    </table>
-          <button class="round">Search</button>
-      <?php print form_close(); ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                        
+                    </tfoot>
+                </table>
+                
+                <?php endforeach; ?>
+                                
+                <?php  }  ?>         
+                
+                <?php //for($i=$row; $i<=count($rowdata); $i++): ?>
             </section>
-
         </div>
         
     </div> 
