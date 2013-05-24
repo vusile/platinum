@@ -253,6 +253,41 @@
                 <button class="round">Search</button>
                 <?php print form_close(); ?>
                 <?php }  else { ?>
+                <?php 
+                 $prefs['template'] = '
+
+   {table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
+
+   {heading_row_start}<tr>{/heading_row_start}
+
+   {heading_previous_cell}<th><a href="{previous_url}">&lt;&lt;</a></th>{/heading_previous_cell}
+   {heading_title_cell}<th colspan="{colspan}">{heading}</th>{/heading_title_cell}
+   {heading_next_cell}<th><a href="{next_url}">&gt;&gt;</a></th>{/heading_next_cell}
+
+   {heading_row_end}</tr>{/heading_row_end}
+
+   {week_row_start}<tr>{/week_row_start}
+   {week_day_cell}<td>{week_day}</td>{/week_day_cell}
+   {week_row_end}</tr>{/week_row_end}
+
+   {cal_row_start}<tr>{/cal_row_start}
+   {cal_cell_start}<td>{/cal_cell_start}
+
+   {cal_cell_content}<div style="color:blue">{content}{day}<br /> Available</div>{/cal_cell_content}
+   {cal_cell_content_today}<div class="highlight"><a href="{content}">{day}</a></div>{/cal_cell_content_today}
+
+   {cal_cell_no_content}<div style="color:red">{day}<br/>Not Available</div>{/cal_cell_no_content}
+   {cal_cell_no_content_today}<div class="highlight">{day}</div>{/cal_cell_no_content_today}
+
+   {cal_cell_blank}&nbsp;{/cal_cell_blank}
+
+   {cal_cell_end}</td>{/cal_cell_end}
+   {cal_row_end}</tr>{/cal_row_end}
+
+   {table_close}</table>{/table_close}
+';
+                
+                ?>
                 
                 <h2>Location Availability Search Results</h2>
 
@@ -292,45 +327,47 @@
                         <?php $i=0; ?>
                         <?php foreach ($value as $row=>$rowdata): ?>
                        <?php
-                                $data = explode('-', $rowdata);
+                                $rowdata=  date('y/m/d', strtotime($rowdata));
+                                $data = explode('/', $rowdata);
+                                $year = $data['0'];
                                 $month =$data[1];
                                 //$rodata =  strtotime('d m y', $rowdata);
                                 switch ($month) {
                                     case 01:
-                                        array_push($January, $rowdata);
+                                        array_push($January, $data[2]);
                                         break;
                                      case 02:
-                                        array_push($February, $rowdata);
+                                        array_push($February, $data[2]);
                                         break;
                                      case 03:
-                                        array_push($March, $rowdata);
+                                        array_push($March, $data[2]);
                                         break;
                                      case 04:
-                                        array_push($April, $rowdata);
+                                        array_push($April, $data[2]);
                                         break;
                                      case 05:
-                                        array_push($May, $rowdata);
+                                        array_push($May, $data[2]);
                                         break;
                                      case 06:
-                                        array_push($June, $rowdata);
+                                        array_push($June, $data[2]);
                                         break;
                                      case 07:
-                                        array_push($July, $rowdata);
+                                        array_push($July, $data[2]);
                                         break;
                                      case 08:
-                                        array_push($August, $rowdata);
+                                        array_push($August, $data[2]);
                                         break;
                                      case 09:
-                                        array_push($September, $rowdata);
+                                        array_push($September, $data[2]);
                                         break;
                                      case 10:
-                                        array_push($October, $rowdata);
+                                        array_push($October, $data[2]);
                                         break;
                                      case 11:
-                                        array_push($November, $rowdata);
+                                        array_push($November, $data[2]);
                                         break;
                                      case 12:
-                                        array_push($December, $rowdata);
+                                        array_push($December, $data[2]);
                                         break;
                                 }
                        ?>
@@ -351,7 +388,10 @@
                         
                     </tfoot>
                 </table>-->
-            <?php if(count($January)>0){?>
+            <?php if(count($January)>0){
+                    $this->load->library('calendar', $prefs);
+            echo $this->calendar->generate($year, 1, $January);
+            ?>
             <table id="result">
                 <thead>
                     <h4>Available Dates On January</h4>
@@ -443,7 +483,10 @@
             
             
             
-            <?php }if (count($April)>0) { ?>
+            <?php }if (count($April)>0) {
+                 $this->load->library('calendar', $prefs);
+                 echo $this->calendar->generate($year, 4, $April);
+                ?>
                 <table id="result">
                     <thead>
                         <h4>Available Dates On April</h4>
