@@ -106,6 +106,12 @@
           bord/er: 1px solid #F7AE36;
           margin: 0 auto;
     }
+    #resultData
+    {
+        border: 1px solid #EDEBF0;
+        padding:40px;
+        paddin/g-left: 60px;
+    }
 </style>
 <link rel="stylesheet" href="style/js/libs/jquery-ui/css/ui-lightness/jquery-ui.css" />
 <script src="style/js/libs/jquery-1.9.1.min.js""></script>
@@ -163,6 +169,11 @@
         </div>
         <div id="content">
             <section class="padded" style="margin: 20px 80px 10px 80px;">
+                <?php 
+                    if(isset($no_result) && $no_result !=""){
+                        print '<p>'.$no_result.'dasfas</p>';
+                    }
+                ?>
                 <?php if(!isset($success)){?>
                 <h2>Location Availability Search</h2>
                 <?php if(isset($error) && $error !=""){ ?>
@@ -244,43 +255,480 @@
                 <?php }  else { ?>
                 
                 <h2>Location Availability Search Results</h2>
+
                 
                 <?php  //echo "<br /><pre>"; print_r($success);echo "<pre>";?>
                 
                 <p> <?php foreach ($success as $key=>$value): ?> </p>
+                                <?php
+                    
+                  
+                            //month arrays
+                            $January = array(); $February = array();
+
+                            $March = array();   $April = array();
+
+                            $May = array();     $June = array();
+
+                            $July= array();     $August = array();
+
+                            $September= array();     $October = array();
+
+                            $November = array();     $December = array();
+
+                            //callender array
+                            $callender = array ('January' => $January, 'February'=>$February, 'March'=>$March, 'April'=>$April,
+                                                'May'=>$May, 'June'=>$June, 'July'=>$July, 'August'=>$August, 'September'=>$September,
+                                                'October'=>$October, 'November'=>$November, 'December'=>$December); 
+                                    
+                ?>
                 
                 <p><h3 style="color:#F7AE36"> <?php print $key; ?> </h3></p>
-                <table id="result">
-                    <thead>
-                        <h4>Available Dates</h4>
-                    </thead>
-                    <tbody>
-                        <tr>
+                <div id="resultData">
+                    
+                        <h4>Available Dates for  <?php print $key; ?> </h4><br />
+                    <!--<tbody>
+                        <tr>-->
                         <?php $i=0; ?>
                         <?php foreach ($value as $row=>$rowdata): ?>
-                        <?php 
+                       <?php
+                                $data = explode('-', $rowdata);
+                                $month =$data[1];
+                                switch ($month) {
+                                    case 01:
+                                        array_push($January, $rowdata);
+                                        break;
+                                     case 02:
+                                        array_push($February, $rowdata);
+                                        break;
+                                     case 03:
+                                        array_push($March, $rowdata);
+                                        break;
+                                     case 04:
+                                        array_push($April, $rowdata);
+                                        break;
+                                     case 05:
+                                        array_push($May, $rowdata);
+                                        break;
+                                     case 06:
+                                        array_push($June, $rowdata);
+                                        break;
+                                     case 07:
+                                        array_push($July, $rowdata);
+                                        break;
+                                     case 08:
+                                        array_push($August, $rowdata);
+                                        break;
+                                     case 09:
+                                        array_push($September, $rowdata);
+                                        break;
+                                     case 10:
+                                        array_push($October, $rowdata);
+                                        break;
+                                     case 11:
+                                        array_push($November, $rowdata);
+                                        break;
+                                     case 12:
+                                        array_push($December, $rowdata);
+                                        break;
+                                }
+                       ?>
+                        <?php /*
                             $i++;
                             
-                            if($i%7 !=0){
+                            if($i%7 !==0){
                                print '<td>'.$rowdata.'</td>';
                             }
                             else{
-                                print '</tr><tr><td> <?php print $rowdata; ?>  </td> </tr>';
-                            }
+                                print '</tr><tr><td>'.$rowdata.'</td>';
+                            }*/
                         
                         ?>
                         <?php endforeach; ?>
-                    </tbody>
+                    <!--</tbody>
                     <tfoot>
                         
                     </tfoot>
-                </table>
-                
-                <?php endforeach; ?>
-                                
-                <?php  }  ?>         
-                
-                <?php //for($i=$row; $i<=count($rowdata); $i++): ?>
+                </table>-->
+            <?php if(count($January)>0){?>
+            <table id="result">
+                <thead>
+                    <h4>Available Dates On January</h4>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php $i=0; ?>
+                       <?php foreach ($January as $maydata): ?>
+                        <?php 
+                            $i++;
+                            
+                            if($i%7 !==0){
+                               print '<td>'.$maydata.'</td>';
+                            }
+                            else{
+                                print '</tr><tr><td>'.$maydata.'</td>';
+                            }
+                        
+                        ?>
+                           
+                    <?php endforeach; ?>
+
+                </tbody>
+                <tfoot>
+                        
+                </tfoot>
+           </table> 
+                     
+            <?php }if (count($February)>0) { ?>
+                        <table id="result">
+                <thead>
+                    <h4>Available Dates On February</h4>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php $i=0; ?>
+                       <?php foreach ($February as $maydata): ?>
+                        <?php 
+                            $i++;
+                            
+                            if($i%7 !==0){
+                               print '<td>'.$maydata.'</td>';
+                            }
+                            else{
+                                print '</tr><tr><td>'.$maydata.'</td>';
+                            }
+                        
+                        ?>
+                           
+                    <?php endforeach; ?>
+
+                </tbody>
+                <tfoot>
+                        
+                </tfoot>
+           </table> 
+            
+            <?php }if (count($March)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On March</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($March as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+            
+            
+            
+            <?php }if (count($April)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On April</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($April as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+                        
+            <?php }if (count($May)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On May</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($May as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+            
+            
+            <?php }if (count($June)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On June</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($June as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>  
+            
+            
+            <?php }if (count($July)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On July</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($July as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>  
+            
+            
+            <?php }if (count($August)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On August</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($August as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>  
+            
+            
+            <?php }if (count($September)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On September</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($September as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>  
+            
+            
+            <?php }if (count($October)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On October</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($October as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+            
+            
+            <?php }if (count($November)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On November</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($November as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+            
+            
+            <?php }if (count($December)>0) { ?>
+                <table id="result">
+                    <thead>
+                        <h4>Available Dates On December</h4>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php $i=0; ?>
+                           <?php foreach ($December as $maydata): ?>
+                            <?php 
+                                $i++;
+
+                                if($i%7 !==0){
+                                   print '<td>'.$maydata.'</td>';
+                                }
+                                else{
+                                    print '</tr><tr><td>'.$maydata.'</td>';
+                                }
+
+                            ?>
+
+                        <?php endforeach; ?>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table> 
+            
+            
+            
+            <?php   }    ?>     
+            
+                <?php //print "<pre>"; print_r($May); print '</pre>'; ?>
+            
+                </div>
+                <?php endforeach; ?> 
+                <?php  }  ?>    
+           
             </section>
         </div>
         

@@ -1354,7 +1354,12 @@ class Admin extends CI_Controller{
                     {
                         $key=array_search($bookedDate->date, $searchDates);
                         unset($locationsAvailable[$bookedDate->location_name][$key]);
-                        $data['success'] =  $locationsAvailable;
+                        if(count($locationsAvailable)>0){
+                            
+                            $data['success'] =  $locationsAvailable;
+                        }else{
+                            $data['no_result'] = "No results were found please reine your search";
+                        }
                     }
 		}
                 
