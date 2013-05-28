@@ -34,10 +34,10 @@ class Admin extends CI_Controller{
     {cal_row_start}<tr>{/cal_row_start}
     {cal_cell_start}<td>{/cal_cell_start}
     
-    {cal_cell_content}<div style="">{day}<br />{content}</div>{/cal_cell_content}
-    {cal_cell_content_today}<div class="highlight">{day}<br />{content}</a></div>{/cal_cell_content_today}
+    {cal_cell_content}<div style="color:blue">{day}<br /><p style="font-size:1em; padding:2px;">Available</p></div>{/cal_cell_content}
+    {cal_cell_content_today}<div class="highlight"><a href="{content}">{day}</a></div>{/cal_cell_content_today}
     
-    {cal_cell_no_content}<div style="">{day}</p></div>{/cal_cell_no_content}
+    {cal_cell_no_content}<div style="">{day}<p style="font-size:1em; padding:2px;"></p></div>{/cal_cell_no_content}
     {cal_cell_no_content_today}<div class="highlight">{day}</div>{/cal_cell_no_content_today}
     
     {cal_cell_blank}&nbsp;{/cal_cell_blank}
@@ -1300,11 +1300,7 @@ class Admin extends CI_Controller{
 	      array_push($aryRange,date('Y-m-d',$iDateFrom));
 	    }
 	  }
-          
-          
-	  
-          
-          return $aryRange;
+	  return $aryRange;
 	}
 
     function add_inventory_booking($post_array, $primary_key){
@@ -1394,29 +1390,11 @@ class Admin extends CI_Controller{
                 $data['from'] = $from;
                 $data['to'] = $to;
                 $searchDates = $this->createDateRangeArray($from, $to);
-                
-                $values=array_fill(0,count($searchDates),'<span style = "color:green;font-weight:bold">Available</span>');
-                
-                
 		//echo "<pre>";
 		//print_r($searchDates);
 		//echo "<pre>";
                // print $from."<br />";
                // print $to;
-                
-                
-                
-                
-                $this->db->select('locations.location_name, locations.description, booking.date,locations.location_id');
-                $this->db->from('locations');
-                $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
-                $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
-                $this->db->where('areas.area_id', $id);
-		$this->db->where_in('date',$searchDates);
-		$booking = $this->db->get();   
-                
-                
-                $searchDates = array_combine($searchDates, $values);
                 
                 $locationsAvailable=array();
                 
@@ -1427,17 +1405,35 @@ class Admin extends CI_Controller{
                 {
                     $locationsAvailable[$location->location_name]=$searchDates;
                 }
- 
+                
+                
+                $this->db->select('locations.location_name, locations.description, booking.date,locations.location_id');
+                $this->db->from('locations');
+                $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
+                $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
+                $this->db->where('areas.area_id', $id);
+		$this->db->where_in('date',$searchDates);
+		$booking = $this->db->get();   
+                
                 foreach($booking->result() as $bookedDate)
 		{
-                   
-                    if(array_key_exists($bookedDate->date, $searchDates))  
-                        $locationsAvailable[$bookedDate->location_name][$bookedDate->date]="<span style = 'color:red;font-weight:bold'>Not Available</span>";
-                               
+                    if(array_search($bookedDate->date, $searchDates)!==FALSE)
+                    {
+                        $key=array_search($bookedDate->date, $searchDates);
+                        unset($locationsAvailable[$bookedDate->location_name][$key]);
+                        if(count($locationsAvailable)>0){
+                            
+                            $data['success'] =  $locationsAvailable;
+                        }else{
+                            $data['no_result'] = "No results were found please reine your search";
+                        }
+                    }
 		}
-                $data['success'] =  $locationsAvailable;
-
-               
+                
+                //var_dump($locationsAvailable);
+                //echo "<br /><pre>";
+		//print_r($locationsAvailable);
+		//echo "<pre>";
             }
         }
         $this->load->view('Admin/location_search', $data);

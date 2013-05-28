@@ -14,46 +14,12 @@ class Admin extends CI_Controller{
     //put your code here
     
     public $path = 'http://localhost/platinum/assets/uploads/files/';
-    public  $pref = array(
-    			'template' =>'
-    
-    {table_open}<table  style="border: 2px solid #F7AE36; padding:4px; margin:4px">{/table_open}
-    
-    {heading_row_start}<tr>{/heading_row_start}
-    
-    {heading_previous_cell}<th><a href="{previous_url}">&lt;&lt;</a></th>{/heading_previous_cell}
-    {heading_title_cell}<th colspan="{colspan}">{heading}</th>{/heading_title_cell}
-    {heading_next_cell}<th><a href="{next_url}">&gt;&gt;</a></th>{/heading_next_cell}
-    
-    {heading_row_end}</tr>{/heading_row_end}
-    
-    {week_row_start}<tr>{/week_row_start}
-    {week_day_cell}<td>{week_day}</td>{/week_day_cell}
-    {week_row_end}</tr>{/week_row_end}
-    
-    {cal_row_start}<tr>{/cal_row_start}
-    {cal_cell_start}<td>{/cal_cell_start}
-    
-    {cal_cell_content}<div style="">{day}<br />{content}</div>{/cal_cell_content}
-    {cal_cell_content_today}<div class="highlight">{day}<br />{content}</a></div>{/cal_cell_content_today}
-    
-    {cal_cell_no_content}<div style="">{day}</p></div>{/cal_cell_no_content}
-    {cal_cell_no_content_today}<div class="highlight">{day}</div>{/cal_cell_no_content_today}
-    
-    {cal_cell_blank}&nbsp;{/cal_cell_blank}
-    
-    {cal_cell_end}</td>{/cal_cell_end}
-    {cal_row_end}</tr>{/cal_row_end}
-    
-    {table_close}</table>{/table_close}'
-    		);
     
     function __construct() {
         
         parent::__construct();
         
         $this->load->library('grocery_crud');
-        $this->load->library('calendar', $this->pref);
         
         $this->path;
     }
@@ -276,7 +242,7 @@ class Admin extends CI_Controller{
     
     function delete_client_contact($primary_key){
         
-        $this->db->where('client_id', $primary_key);
+        $this->db->where('contact_id', $primary_key);
         
         $this->db->delete('contacts');
 
@@ -1078,15 +1044,6 @@ class Admin extends CI_Controller{
                                         'longitude', 'annual_rent', 'start_date', 
                                         'end_date', 'amount', 'payment_model');
         
-        $state = $this->grocery_crud->getState();
-        
-        if($state ='delete'){
-            
-            $this->grocery_crud->callback_after_delete(array($this,'delete_inventory_booking_location'));
-            
-        }
-        
-        
         $this->grocery_crud->set_theme('datatables');
         
         $this->grocery_crud->set_subject('Location'); 
@@ -1104,15 +1061,8 @@ class Admin extends CI_Controller{
     {
         return site_url('Admin/location_details/'.$row->location_id);
     }
-    //delete inventory and booking when deleting location
     
-    function delete_inventory_booking_location($primary_key){
-        $tables = array('booking', 'inventories');
-        $this->db->where('location_id', $primary_key);
-        $this->db->delete($tables);
-        
-    }
-            
+    
     function location_photos($id){
         
         $contact_id = $id;
@@ -1267,14 +1217,6 @@ class Admin extends CI_Controller{
         $this->grocery_crud->callback_after_upload(array($this,'create_location_Thumb_callback_after_upload'));
         
         //$this->grocery_crud->callback_after_update(array($this,'change_slide_url'));
-        
-        $state =  $this->grocery_crud->getState();
-        
-        if($state='delete'){
-            
-            $this->grocery_crud->callback_after_delete(array($this,'delete_inventory_bookin'));
-            
-        }
 
         $output = $this->grocery_crud->render();
         
@@ -1300,11 +1242,7 @@ class Admin extends CI_Controller{
 	      array_push($aryRange,date('Y-m-d',$iDateFrom));
 	    }
 	  }
-          
-          
-	  
-          
-          return $aryRange;
+	  return $aryRange;
 	}
 
     function add_inventory_booking($post_array, $primary_key){
@@ -1335,16 +1273,8 @@ class Admin extends CI_Controller{
            // }
         //}
     }
-    
-    function delete_inventory_bookin($primary_key){
-        
-        $this->db->where('invetory_id', $primary_key);
-        $this->db->delete('booking');
-        
-        
-    }
             
-    function search_location_availability(){
+    function searach_location_availability(){
         
         $this->load->model('admin_model');
         
@@ -1391,32 +1321,13 @@ class Admin extends CI_Controller{
                 $from = $_POST['from'];
                 $to   = $_POST['to'];
                 $id   = $_POST['area'];
-                $data['from'] = $from;
-                $data['to'] = $to;
+                
                 $searchDates = $this->createDateRangeArray($from, $to);
-                
-                $values=array_fill(0,count($searchDates),'<span style = "color:green;font-weight:bold">Available</span>');
-                
-                
 		//echo "<pre>";
 		//print_r($searchDates);
 		//echo "<pre>";
                // print $from."<br />";
                // print $to;
-                
-                
-                
-                
-                $this->db->select('locations.location_name, locations.description, booking.date,locations.location_id');
-                $this->db->from('locations');
-                $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
-                $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
-                $this->db->where('areas.area_id', $id);
-		$this->db->where_in('date',$searchDates);
-		$booking = $this->db->get();   
-                
-                
-                $searchDates = array_combine($searchDates, $values);
                 
                 $locationsAvailable=array();
                 
@@ -1427,19 +1338,43 @@ class Admin extends CI_Controller{
                 {
                     $locationsAvailable[$location->location_name]=$searchDates;
                 }
- 
+                
+                
+                $this->db->select('locations.location_name, locations.description, booking.date,locations.location_id');
+                $this->db->from('locations');
+                $this->db->join('areas', 'locations.area_id=areas.area_id', 'inner');
+                $this->db->join('booking', 'locations.location_id=booking.location_id', 'inner');
+                $this->db->where('areas.area_id', $id);
+		$this->db->where_in('date',$searchDates);
+		$booking = $this->db->get();   
+                
                 foreach($booking->result() as $bookedDate)
 		{
-                   
-                    if(array_key_exists($bookedDate->date, $searchDates))  
-                        $locationsAvailable[$bookedDate->location_name][$bookedDate->date]="<span style = 'color:red;font-weight:bold'>Not Available</span>";
-                               
+                    if(array_search($bookedDate->date, $searchDates)!==FALSE)
+                    {
+                        $key=array_search($bookedDate->date, $searchDates);
+                        unset($locationsAvailable[$bookedDate->location_name][$key]);
+                        if(count($locationsAvailable)>0){
+                            
+                            $data['success'] =  $locationsAvailable;
+                        }else{
+                            $data['no_result'] = "No results were found please reine your search";
+                        }
+                    }
 		}
-                $data['success'] =  $locationsAvailable;
-
-               
+                
+                //var_dump($locationsAvailable);
+                //echo "<br /><pre>";
+		//print_r($locationsAvailable);
+		//echo "<pre>";
             }
         }
+        $this->load->view('Admin/location_search', $data);
+    }
+    
+    function Search_Results(){
+
+        
         $this->load->view('Admin/location_search', $data);
     }
     

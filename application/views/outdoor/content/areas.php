@@ -7,7 +7,7 @@
  */
 
 
- $js = 'id="jumpMenu" onChange="" ';
+ $js = 'id="jumpMenu" onChange="" class="selectOption" ';
                
                 $values = array();
                 $keys = array();

@@ -280,7 +280,7 @@
                 </table>
                 <?php print form_close(); ?>
                 <?php }  else { ?>
-                <h2>Location Availability Search Results  <?php print '<span style="color:green">From</span> <span style="color:red">'.date('d/M/Y', strtotime($from)).'</span> <span style="color:green">To</span>   <span style="color:red">  '.date('d/M/Y', strtotime($to)).'</span><br />'; ?></h2>
+                <h2>Location Availability Search Results</h2>
                 <?php 
               
 
@@ -290,20 +290,21 @@
                 <?php 
                 $number_of_yrs = array();
                 $yr_dff = $to - $from;
-                
                 $from = explode("-", $from);
                 $from_month =$from[1];
                 $from=$from[0];
                 $to =  explode("-", $to);
                 $to_month = $to[1];
+                //print $yr_dff;
+                //print '<br>'.$from;
+                print $to_month.'khkhk<br>gkgkhg';
                 for($i=0; $i<=$yr_dff; $i++){
                     $frm=$from + $i;
                     $number_of_yrs[$frm] = $frm;
                 }
                 // print "<pre>";print_r($number_of_yrs); print '</pre><hr>';
                
-                foreach ($success as $key=>$value){                                            ?>
-        
+                foreach ($success as $key=>$value){                            ?>
                 
                 <h3 style="color:#F7AE36"> <?php print $key; ?> </h3>
                 <div id="resultData">
@@ -335,48 +336,48 @@
                         
             foreach ($value as $row=>$rowdata){
                 $months =array();
-                $row=  date('j/n/Y', strtotime($row)); //svar_dump($rowdata);
-                $data  = explode('/', $row);
+                $rowdata=  date('j/n/Y', strtotime($rowdata)); //svar_dump($rowdata);
+                $data  = explode('/', $rowdata);
                 $day   = $data['0'];
                 $month = $data[1];
                 $year  = $data['2'];
               if($year == $yrs_range){
                switch ($month) {
                     case 1:
-                        array_push($January, $January[$day]=$rowdata);
+                        array_push($January, $January[$day]=$day);
                         break;
                      case 2:
-                        array_push($February, $February[$day]=$rowdata);
+                        array_push($February, $February[$day]=$day);
                         break;
                      case 3:
-                        array_push($March, $March[$day]=$rowdata);
+                        array_push($March, $March[$day]=$day);
                         break;
                      case 4:
-                        array_push($April, $April[$day]=$rowdata);
+                        array_push($April, $April[$day]=$day);
                         break;
                      case 5:
-                        array_push($May, $May[$day]=$rowdata);
+                        array_push($May, $May[$day]=$day);
                         break;
                      case 6:
-                        array_push($June, $June[$day]=$rowdata);
+                        array_push($June, $June[$day]=$day);
                         break;
                      case 7:
-                        array_push($July, $July[$day]=$rowdata);
+                        array_push($July, $July[$day]=$day);
                         break;
                      case 8:
-                        array_push($August, $August[$day]=$rowdata);
+                        array_push($August, $August[$day]=$day);
                         break;
                      case 9:
-                        array_push($September, $September[$day]=$rowdata);
+                        array_push($September, $September[$day]=$day);
                         break;
                      case 10:
-                        array_push($October, $October[$day]=$rowdata);
+                        array_push($October, $October[$day]=$day);
                         break;
                      case 11:
-                        array_push($November, @$November[$day]=$rowdata);
+                        array_push($November, @$November[$day]=$day);
                         break;
                      case 12:
-                        array_push($December, $December[$day]=$rowdata); 
+                        array_push($December, $December[$day]=$day); 
                         break;
                 }
                 //callender array
@@ -394,11 +395,11 @@
                        //print $my_month.'<br />';
                         if($my_year==$from && $my_month >= $from_month && $my_month<=$to_month){
                             $k=array_key_exists($key, $my_day);
-                         echo $this->calendar->generate($my_year, $my_month, array_values($my_day));
+                         echo $this->calendar->generate($my_year, $my_month, $my_day);
                          
                         }elseif($my_year > $from && $my_month <=$to_month){
                             
-                            echo $this->calendar->generate($my_year, $my_month, array_values($my_day));
+                            echo $this->calendar->generate($my_year, $my_month, $my_day);
                         }
                         
                    //print "<pre>";print_r($my_day); print '</pre><hr>';
