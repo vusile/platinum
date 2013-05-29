@@ -1219,7 +1219,24 @@ class Admin extends CI_Controller{
         $this->load->model('admin_model');
         $data['query']= $this->admin_model->getLocation($id);
         $data['photos']= $this->admin_model->getLocationImages($id);
-       // var_dump($data['photos']);
+        $data['content'] ='<table><tr><td><h1>LOCATION DETAILS</h1></td></tr><tr><td class="twidth"><p><h4>Location name:</h4></p></td>
+                            <td><p><h5 style="font-weight:normal;">'.$data['query']->location_name.'</h5></p></td></tr><tr><td class="twidth"><p><h4>Landlord:</h4></p></td>
+                            <td><p><h5 style="font-weight:normal;">'.$data['query']->first_name." ".$data['query']->last_name.'</h5></p></td>
+                            </tr><tr><td><p><h4>Description:</h4></p></td><td><div style="width:450px;"><p style="text-align:justify;">'.$data['query']->description.'</p></div></td></tr>
+                            <tr></tr>
+                            <tr><td style="min-width: 210px !important;"><p><h4>Area:</h4></p></td><td><p style="line-height:1.5; text-align:justify;">'. $data['query']->name.'</p></td></tr>
+                            <tr></tr>
+                            <tr><td style=" min-width: 210px !important;"><p><h4>Size:</h4></p></td><td><p><h4 style="font-weight:normal;">'.$data['query']->size.'</h4></p></td></tr>
+                            <tr><td style=" min-width: 210px !important;"><p><h4># of Faces:</h4></p></td><td><p><h4 style="font-weight:normal;">'.$data['query']->faces.'</h4></p></td></tr>
+                            <tr><td><p><h4>Illuminated:</h4></p></td><td><p><h4 style="font-weight:normal;">'.$data['query']->illuminated.'</h4></p></td></tr>
+                            <tr><td><p><h4>Latitude:</h4></p></td><td><p><h4 style="font-weight:normal;">'.$data['query']->latitude.'</h4></p></td></tr>
+                            <tr><td><p><h4>Longitude:</h4></p></td><td><p><h4 style="font-weight:normal;">'. $data['query']->longitude.'</h4></p></td></tr>
+                            <tr><td><p><h4>Rented From:</h4></p></td><td><p><h4 style="font-weight:normal;">'. $data['query']->start_date.'</h4></p></td>
+                            <td><p><h4>To:</h4></p></td><td><p><h4 style="font-weight:normal;">'.$data['query']->end_date.'</h4></p></td></tr>
+                            <tr><td><h1>PAYMENT TERMS:</h1></td></tr><tr><td>Payment amount:</td><td>'.$data['query']->amount.'</td><td>'.$data['query']->payment_model.'</td></tr>
+                            </table>
+                            <table>
+                            </table>';
         $this->load->view('Admin/downloadPDF', $data);
     }
     

@@ -110,7 +110,7 @@
             <section class="padded" style="margin: 20px 10px 10px 80px;">
                 <table>
                     <thead>
-                        <td class="twidth"><h1>LOCATION DETAILS</h1></t>
+                        <td class="twidth"><h1>LOCATION DETAILS</h1></td>
                     </thead>
                     <tbody>
                         <tr>
@@ -123,7 +123,7 @@
                         </tr>
                         <tr>
                             <td><p><h4>Description:</h4></p></td>
-                            <td><?php print $query->description ?></td>
+                            <td><div><?php print $query->description ?><div></td>
                         </tr>
                     </tbody>
                 </table>

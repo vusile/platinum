@@ -54,7 +54,7 @@ if (substr($k_path_main, -1) != '/') {
 define ('K_PATH_MAIN', $k_path_main);
 
 // Automatic calculation for the following K_PATH_URL constant
-if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
+if (isset($_SERVER['HTTP_HOST']) AND (empty($_SERVER['HTTP_HOST']))) {
 	if(isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND strtolower($_SERVER['HTTPS'])!='off') {
 		$k_path_url = 'https://';
 	} else {
